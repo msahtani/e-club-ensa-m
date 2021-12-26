@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.enums import TextChoices
-from django.db.models.fields import AutoField, BooleanField, CharField, DateTimeField, IntegerField, SmallIntegerField, TextField
+from django.db.models.enums import IntegerChoices, TextChoices
+from django.db.models.fields import AutoField, BooleanField, CharField, DateTimeField,SmallIntegerField, TextField
 from django.db.models.fields.related import ForeignKey
 # Create your models here.
 
@@ -17,25 +17,26 @@ class Cell(models.Model):
 
 class MemberShip(models.Model):
 
-    grades = [
-        ('PRS', 'PRESEDENT'),
-        ('VPR', 'VICE_PRESEDENT'),
-        ('SEC', 'SECRETARY'),
-        ('TRS', 'TREASURY'),
-        ('CLM', 'CELL_MANAGER'),
-        ('MBR', 'MEMBER')
-    ]
-        
+    class Grades(TextChoices):
+        PRS = 'PRS', ('PRESENDENT')
+        VPR = 'VPR', ('VICE_PRESEDENT')
+        SEC = 'SEC', ('SECRETARY')
+        TRS = 'TRS', ('TREASURY')
+        CLM = 'CLM', ('CELL_MANAGER')
+        MBR = 'MBR', ('MEMBER')
+    
+    class State(IntegerChoices):
+        ACTIVE = 1
+        PENDING = 0
+        DISABLED = -1
 
     user = ForeignKey(User, on_delete=models.CASCADE)
     club = ForeignKey(Club, on_delete=models.CASCADE)
-    grade = CharField(
-        max_length=3,
-        choices=grades,
-        default = "MBR"
-    )
+    grade = CharField(max_length=3, choices=Grades.choices, default = Grades.MBR)
     cell = ForeignKey(Cell)
-    date = models.DateTimeField(auto_created=True)
+    date_of_join = DateTimeField(auto_created=True)
+    stuffing_session = ForeignKey('StuffingSession')
+    state = SmallIntegerField(choices=State.choices, default=0)
 
 class Post(models.Model):
 
@@ -64,4 +65,14 @@ class TrainingSession(models.Model):
     presented_by = ForeignKey(User)
     cencelled = BooleanField(default=False)
 
-    
+class TrainingRegistration(models.Model):
+    user = ForeignKey(User)
+    session = ForeignKey(TrainingSession)
+    registered_at = DateTimeField(auto_now=True)
+
+class StuffingSession(models.Model):
+    id_session = AutoField(primary_key=True)
+    post = ForeignKey(Post)
+    started_at = DateTimeField()
+    end_at = DateTimeField()
+    canceled = BooleanField(default=False)
