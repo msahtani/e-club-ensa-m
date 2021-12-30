@@ -8,6 +8,7 @@ from django.db.models.fields.related import ForeignKey
 class Club(models.Model):
     id_club = models.AutoField(primary_key=True)
     nom = CharField(max_length=50)
+    description = TextField()
     logo = models.ImageField()
     
 class Cell(models.Model):
