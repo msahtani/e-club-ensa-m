@@ -34,9 +34,9 @@ class MemberShip(models.Model):
     user = ForeignKey(User, on_delete=models.CASCADE)
     club = ForeignKey(Club, on_delete=models.CASCADE)
     grade = CharField(max_length=3, choices=Grades.choices, default = Grades.MBR)
-    cell = ForeignKey(Cell)
+    cell = ForeignKey(Cell, on_delete=models.CASCADE)
     date_of_join = DateTimeField(auto_created=True)
-    stuffing_session = ForeignKey('StuffingSession')
+    stuffing_session = ForeignKey('StuffingSession', null = True,on_delete=models.SET_NULL)
     state = SmallIntegerField(choices=State.choices, default=0)
 
 class Post(models.Model):
@@ -48,7 +48,7 @@ class Post(models.Model):
 
     id_post = AutoField(primary_key=True)
     title = CharField(max_length=100)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     content = TextField()
     pic_url = CharField(max_length=100)
     created_at = DateTimeField(auto_created=True)
@@ -60,20 +60,20 @@ class Post(models.Model):
 
 class TrainingSession(models.Model):
     id_session = AutoField(primary_key=True)
-    post = ForeignKey(Post)
+    post = ForeignKey(Post, null = True, on_delete=models.SET_NULL)
     limited_places = SmallIntegerField(default=0)
     started_at = DateTimeField()
-    presented_by = ForeignKey(User)
+    presented_by = ForeignKey(User, null = True, on_delete=models.SET_NULL)
     cencelled = BooleanField(default=False)
 
 class TrainingRegistration(models.Model):
-    user = ForeignKey(User)
-    session = ForeignKey(TrainingSession)
+    user = ForeignKey(User, on_delete=models.CASCADE)
+    session = ForeignKey(TrainingSession, on_delete=models.CASCADE)
     registered_at = DateTimeField(auto_now=True)
 
 class StuffingSession(models.Model):
     id_session = AutoField(primary_key=True)
-    post = ForeignKey(Post)
+    post = ForeignKey(Post, null = True, on_delete=models.SET_NULL)
     started_at = DateTimeField()
     end_at = DateTimeField()
     canceled = BooleanField(default=False)
