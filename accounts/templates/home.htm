@@ -1,20 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>WELCOME TO E-CLUB ENSA</h1>
+{% extends 'base.htm' %}
 
-    {% if is_logged_in%}
-    <h4> {{ user }} </h4>
-    <a href="http://127.0.0.1:8000/logout"> logout </a>
-    {% else %}
-    <a href="http://127.0.0.1:8000/login"> login </a>
-    {% endif %}
-    
-</body>
-</html>
+{% load static %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block contents %}
+<div class="container">
+        
+    <nav class="navbar navbar-expand-sm navbar-light">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">E-CLUB</a>
+            </div>
+
+            <ul class="navbar-nav d-flex">
+                {% if user %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        {{ user }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout/">
+                        Log Out
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Sign Up
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="login/">
+                        Log In
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+
+
+        </div>
+
+    </nav>
+  
+  
+</div>
+{% endblock %}
