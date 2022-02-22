@@ -11,6 +11,7 @@ from django.db.models.fields import (
     URLField
 )
 from django.db.models.fields.related import ForeignKey
+from django.utils import timezone
 # Create your models here.
 
 User = get_user_model()
@@ -28,7 +29,7 @@ class Cell(models.Model):
     id_cell = AutoField(primary_key=True)
     club = ForeignKey(Club, models.CASCADE)
     name = CharField(max_length=50)
-    desc = TextField(max_length=500)
+    desc = TextField(max_length=500, null=True)
 
     def __str__(self):
         club_ = Club.objects.get(pk=self.club)
@@ -60,9 +61,9 @@ class MemberShip(models.Model):
     grade = CharField(max_length=3, choices=Grades.choices, default = Grades.MBR)
     cell = ForeignKey(Cell, models.SET_NULL, null=True)
     date_of_join = DateTimeField(auto_created=True)
-    stuffing_session = ForeignKey('StuffingSession', models.SET_NULL, null = True)
+    stuffing_session = ForeignKey('JoiningSession', models.SET_NULL, null = True)
     state = SmallIntegerField(choices=State.choices, default=0)
-    presentation = TextField(max_length=1000) #added in dec 31th,2021 17:06
+    presentation = TextField(max_length=1000, null=True) #added in dec 31th,2021 17:06
     notif_setting = CharField(
         max_length= 4,
         choices= Notification.choices,
@@ -81,14 +82,15 @@ class Post(models.Model):
     title = CharField(max_length=100, null = True)
     author = models.ForeignKey(User, models.SET_NULL, null=True)
     content = TextField()
-    pic_url = CharField(max_length=100, null=True)
-    created_at = DateTimeField(auto_created=True)
-    modified_at = DateTimeField(auto_now_add=True)
+    # pic_url = CharField(max_length=100, null=True)
+    created_at = DateTimeField(auto_now=True)
+    modified_at = DateTimeField(auto_now=True)
     category = CharField(
         max_length=3,
         choices=Categories.choices,
         default = Categories.INF
     )
+
 
 class TrainingSession(models.Model):
     id_session = AutoField(primary_key=True)
@@ -103,7 +105,7 @@ class TrainingRegistration(models.Model):
     session = ForeignKey(TrainingSession, models.CASCADE)
     registered_at = DateTimeField(auto_now=True)
 
-class StuffingSession(models.Model):
+class JoiningSession(models.Model):
     id_session = AutoField(primary_key=True)
     post = ForeignKey(Post, models.SET_NULL, null = True)
     started_at = DateTimeField()
