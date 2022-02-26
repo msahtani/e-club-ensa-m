@@ -32,8 +32,8 @@ class Cell(models.Model):
     desc = TextField(max_length=500, null=True)
 
     def __str__(self):
-        club_ = Club.objects.get(pk=self.club)
-        return self.name + " - " + club_.name
+        return self.name
+
 
 class MemberShip(models.Model):
 
@@ -59,9 +59,8 @@ class MemberShip(models.Model):
     user = ForeignKey(User, models.CASCADE)
     club = ForeignKey(Club, models.CASCADE)
     grade = CharField(max_length=3, choices=Grades.choices, default = Grades.MBR)
-    cell = ForeignKey(Cell, models.SET_NULL, null=True)
-    date_of_join = DateTimeField(auto_created=True)
-    stuffing_session = ForeignKey('JoiningSession', models.SET_NULL, null = True)
+    cell = ForeignKey(Cell, models.SET_NULL, null=True, blank=True)
+    date_of_join = DateTimeField(auto_now=True)
     state = SmallIntegerField(choices=State.choices, default=0)
     presentation = TextField(max_length=1000, null=True) #added in dec 31th,2021 17:06
     notif_setting = CharField(
@@ -69,6 +68,9 @@ class MemberShip(models.Model):
         choices= Notification.choices,
         default= Notification.BOTH
     )
+
+    def __str__(self):
+        return str(self.user) + " -- " + str(self.club)
 
 class Post(models.Model):
 

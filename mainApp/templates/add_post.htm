@@ -9,13 +9,13 @@
 <!-- block content -->
 {% block contents %}
 <div class="container">
-    <form method="post">
+    <h1> Create a Post </h1>
+    <form method="post" id="post_form">
         {% csrf_token %}
         {{ form }}
-        <input class="btn btn-primary" type="submit" value="post">
+        <input class="btn btn-primary" type="submit" value="post" id="post">
     </form>
+
 </div>
-
-
-
+<script src="{% static 'js/add_post.js' %}?{% now 'U' %}"></script>
 {% endblock %}

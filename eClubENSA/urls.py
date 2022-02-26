@@ -30,6 +30,6 @@ urlpatterns = [
     path('login/', login_view, name="login_v"),
     path('logout/', logout_view),
 
-    path('clubs/', include('mainApp.urls'))
+    path('', include('mainApp.urls'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

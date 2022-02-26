@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from mainApp.views import *
 
 urlpatterns = [
-    path('<str:club>/create', add_post)
+    path('<str:club_name>/create', add_post),
+    path('<int:post_id>/update', update_post)
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

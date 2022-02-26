@@ -77,3 +77,23 @@ section {
     font-weight: bold;
     justify-content: end;
 }
+
+.post{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    background-color: #fafafa;
+}
+
+.post p{
+    font-size: 0.8em;
+}
+
+.post h2 {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+hr{
+    margin: 2px;
+}
