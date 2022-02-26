@@ -1,0 +1,21 @@
+{% extends 'base.htm' %}
+
+{% load static %}
+<!-- block header -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/add_post.css' %}?{% now 'U' %}">
+{% endblock%}
+
+<!-- block content -->
+{% block contents %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input class="btn btn-primary" type="submit" value="post">
+    </form>
+</div>
+
+
+
+{% endblock %}

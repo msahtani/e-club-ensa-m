@@ -11,13 +11,6 @@ from .forms import LoginForm
 # Create your views here.
 
 
-def home_view(request: HttpRequest):
-
-    context= {
-        'user': get_user(request) if request.user.is_authenticated else None,
-    }
-    return render(request, 'home.htm', context)
-
 def login_view(request: HttpRequest):
     next = request.GET.get('next')
     form = LoginForm(request.POST or None)

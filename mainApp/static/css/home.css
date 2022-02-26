@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600&display=swap');
+
+* {
+    font-family: 'Poppings', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main{
+    display: flex;
+    flex-direction: row;
+    background-color: #E0E9FD;
+    height: 600px;
+}
+#lside{
+   width: 28%;
+   background-color: white;
+   border-radius: 0 30px 30px 0;
+   box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.05);
+}
+#rside{
+   width: 21%;
+   background-color: #B3CBFD;
+   padding: 10px;
+}
+section {
+    width: 51%;
+}
+
+#eclub_logo {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+#menu {
+    padding-left: 20px;
+}
+
+#menu ul {
+    list-style: none;
+    font-size: 1.3em;
+    display: block;
+    justify-content: center;
+}
+
+#menu ul li {
+    padding: 2px;
+}
+
+.applies {
+    border-radius: 10px;
+    background-color: white;
+    margin: 10px 0;
+    padding: 5px;
+}
+
+.applies p {
+    margin: 0px;
+    font-size: 1.2em;
+}
+
+.applies a{
+    text-decoration: none;
+    padding: 5px;
+    color: gray;
+    display: flex;
+    font-weight: bold;
+    justify-content: end;
+}

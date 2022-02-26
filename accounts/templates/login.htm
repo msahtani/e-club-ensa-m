@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block header %}
-<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}?{% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/login.css' %}?{% now 'U' %}">
 {% endblock %}
 
 {% block contents %}
@@ -33,5 +33,5 @@
   
   
 </div>
-<script type="text/javascript" src="{% static 'accounts/js/login.js' %}?{% now 'U' %}"></script>
+<script type="text/javascript" src="{% static 'js/login.js' %}?{% now 'U' %}"></script>
 {% endblock %}

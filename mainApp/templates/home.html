@@ -1,0 +1,62 @@
+{% extends 'base.htm' %}
+
+{%  load static %}
+
+
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}?{% now 'U' %}">
+{% endblock %}
+
+{% block contents %}
+<main>
+    <aside id="lside">
+        <div id="eclub_logo">
+            <p > E-club</p>
+        </div>
+        <div id="menu">
+            <h3> Account </h3>
+            <ul>
+                <li> Home </li>
+                <li> Profile </li>
+                <li> Messages </li>
+                <li> Settings </li>
+            </ul>
+
+            <h3> Clubs </h3>
+            <ul>
+                <li> Club Informatique </li>
+                <li> Enactus </li>
+                <li> Club SEECS </li>
+                <li> Crisis </li>
+            </ul>
+
+        </div>
+    </aside>
+
+    <section>
+        {% for post in posts %}
+            {{ post }}
+        {% endfor %}
+    </section>
+
+    <aside id="rside">
+        <div id="joining_now">
+            <h3> Joining now</h3>
+            <div class="applies">
+                <p> Crisis </p>
+                <a href="#"> join </a>
+            </div>
+            <div class="applies">
+                <p> Brain X </p>
+                <a href="#"> join </a>
+            </div>
+        </div>
+        <div id="notif">
+            <h3> Notifications</h3>
+
+
+        </div>
+    </aside>
+</main>
+
+{% endblock %}

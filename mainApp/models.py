@@ -24,7 +24,7 @@ class Club(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class Cell(models.Model):
     id_cell = AutoField(primary_key=True)
     club = ForeignKey(Club, models.CASCADE)
@@ -76,11 +76,11 @@ class Post(models.Model):
         INF = 'INF', ('INFORMATIVE')
         TRN = 'TRN', ('TRAINING_SESSION')
         STF = 'STF', ('STUFFING_SESSION')
-        FRM = 'FRM', ('FORM') # 
+        FRM = 'FRM', ('FORM')  
 
     id_post = AutoField(primary_key=True)
     title = CharField(max_length=100, null = True)
-    author = models.ForeignKey(User, models.SET_NULL, null=True)
+    author = ForeignKey(User, models.CASCADE)
     content = TextField()
     # pic_url = CharField(max_length=100, null=True)
     created_at = DateTimeField(auto_now=True)
@@ -90,7 +90,11 @@ class Post(models.Model):
         choices=Categories.choices,
         default = Categories.INF
     )
+    club = ForeignKey(Club, models.SET_NULL, null=True)
+    approved = BooleanField(default=False)
 
+    def __str__(self):
+        return self.title
 
 class TrainingSession(models.Model):
     id_session = AutoField(primary_key=True)
