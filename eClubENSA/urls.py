@@ -24,12 +24,9 @@ from mainApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
     path('', home_view),
-
-    path('accounts/login/', login_view, name='login'),
-    path('login/', login_view, name="login_v"),
-    path('logout/', logout_view),
-
+    path('', include('accounts.urls')),
     path('', include('mainApp.urls'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

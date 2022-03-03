@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'webpack_loader',
     'accounts',
-    'mainApp'
+    'mainApp',
+    'dahsboard'
 ]
 
 MIDDLEWARE = [
