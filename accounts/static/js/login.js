@@ -7,11 +7,10 @@ $('#login').click(
         var _data = $("#login_form").serialize()
         $.ajax({
             url: "",
-            type: "POST",
+            type: "GET",
             data: _data, 
             success: (result) => {
-                location.reload()
-
+                
             },
             error:(err, status)=>{
                 console.clear()

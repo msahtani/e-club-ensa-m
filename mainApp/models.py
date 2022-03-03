@@ -34,7 +34,6 @@ class Cell(models.Model):
     def __str__(self):
         return self.name
 
-
 class MemberShip(models.Model):
 
     class Grades(TextChoices):
@@ -106,6 +105,9 @@ class TrainingSession(models.Model):
     presented_by = ForeignKey(User, models.SET_NULL, null = True)
     cencelled = BooleanField(default=False)
 
+    def __str__(self):
+        return self.post.title
+
 class TrainingRegistration(models.Model):
     user = ForeignKey(User, models.CASCADE)
     session = ForeignKey(TrainingSession, models.CASCADE)
@@ -118,6 +120,7 @@ class JoiningSession(models.Model):
     end_at = DateTimeField()
     canceled = BooleanField(default=False)
 
+# v 2
 class Forms(models.Model):
     post = ForeignKey(Post, models.SET_NULL, null = True)
     content = URLField()

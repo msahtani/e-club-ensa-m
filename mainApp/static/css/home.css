@@ -16,7 +16,6 @@ main{
     display: flex;
     flex-direction: row;
     background-color: #E0E9FD;
-    height: 600px;
 }
 #lside{
    width: 28%;

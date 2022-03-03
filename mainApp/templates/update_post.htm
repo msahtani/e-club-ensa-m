@@ -1,0 +1,24 @@
+{% extends 'base.htm' %}
+
+{% load static %}
+<!-- block header -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/add_post.css' %}?{% now 'U' %}">
+{% endblock%}
+
+<!-- block content -->
+{% block contents %}
+<script src="https://unpkg.com/vue@3"></script>
+
+<div class="container" id="app">
+    <h1> Update a Post </h1>
+    <form method="PUT" id="post_form" @keyup="validate">
+        {% csrf_token %} 
+        <input type="text" name="title" class="form-control" placeholder="title" v-model="title"/>
+        <textarea name="content" class="form-control" placeholder="content" v-model="content"></textarea>
+        <input class="btn btn-primary" type="submit" value="post" id="post" @click="submit" :disabled="disbled">
+    </form>
+
+</div>
+<script src="{% static 'js/update_post.js' %}?{% now 'U' %}"></script>
+{% endblock %}

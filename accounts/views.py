@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user, authenticate as auth, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from .forms import LoginForm
 
@@ -26,11 +27,22 @@ def login_view(request: HttpRequest):
         password = form.cleaned_data.get('password')
         user = auth(request, username=username, password=password)
         login(request, user)
-    
         return redirect(next if next else "/")
     
     context= { 'form': form }
     return render(request, 'login.htm', context)
+
+def forgot_password_view(request:  HttpRequest):
+    email = request.GET['email']
+    """
+    <form method="POST">
+        <input type="email" name="email" />
+    </form>
+    
+    """
+    user = User.objects.filter()
+    
+
 
 def logout_view(request: HttpRequest):
     logout(request)

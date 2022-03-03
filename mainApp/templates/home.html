@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block contents %}
+<script src="https://unpkg.com/vue@3"></script>
+
 <main>
     <aside id="lside">
         <div id="eclub_logo">
@@ -29,39 +31,22 @@
                 <li> Club SEECS </li>
                 <li> Crisis </li>
             </ul>
-
         </div>
     </aside>
 
     <section>
 
-        <div class="post">
-            <h2> Title </h2>
-            <hr/>
-            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  </p>
+        <div id="app">
+            <post v-for="p in posts" :title="p.title" :content="p.content" />
         </div>
         
     </section>
 
     <aside id="rside">
-        <!-- <div id="joining_now">
-            <h3> Joining now</h3>
-            <div class="applies">
-                <p> Crisis </p>
-                <a href="#"> join </a>
-            </div>
-            <div class="applies">
-                <p> Brain X </p>
-                <a href="#"> join </a>
-            </div>
-        </div>
-        <div id="notif">
-            <h3> Notifications</h3>
-        </div> -->
-        
         <a href="/login" class="btn btn_primary"> login </a>
         <a href="/logout" class="btn btn_primary"> logout </a>
     </aside>
 </main>
+<script src="{% static 'js/home.js' %}?{% now 'U'%}"></script>
 
 {% endblock %}

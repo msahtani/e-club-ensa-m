@@ -1,0 +1,21 @@
+{% extends 'base.htm' %}
+
+{% load static %}
+<!-- block header -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/club_profile.css' %}?{% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/add_post.css' %}?{% now 'U' %}">
+{% endblock%}
+
+<!-- block content -->
+{% block contents %}
+<script src="https://unpkg.com/vue@3"></script>
+
+<div id="app">
+  <button @click="showModal"> show modal </button>
+  <create-post-modal />
+</div>
+
+<script src="{% static 'js/club_profile.js' %}?{% now 'U' %}" > </script>
+
+{% endblock %}
