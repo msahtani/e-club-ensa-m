@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 from .views import *
 
 
-url_patterns = [
+urlpatterns = [
     path('accounts/login/', login_view, name='login'),
     path('login/', login_view, name="login_v"),
     path('logout/', logout_view),

@@ -9,7 +9,7 @@ from mainApp.views import *
 
 urlpatterns = [
     #path('<str:club_name>/create', add_post),
-    path('<str:club_name>/', club_profile),
+    path('club/<str:club_name>/', club_profile),
     path('post/<int:post_id>/update', update_post),
     path('post/<int:post_id>', postApi)
 

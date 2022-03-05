@@ -12,8 +12,7 @@
 
 <div class="container" id="app">
     <h1> Update a Post </h1>
-    <form method="PUT" id="post_form" @keyup="validate">
-        {% csrf_token %} 
+    <form id="post_form" @keyup="validate">
         <input type="text" name="title" class="form-control" placeholder="title" v-model="title"/>
         <textarea name="content" class="form-control" placeholder="content" v-model="content"></textarea>
         <input class="btn btn-primary" type="submit" value="post" id="post" @click="submit" :disabled="disbled">

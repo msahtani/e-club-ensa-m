@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'accounts',
     'mainApp',
-    'dahsboard'
+    'dashboard'
 ]
 
 MIDDLEWARE = [

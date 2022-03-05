@@ -31,10 +31,9 @@ var app = Vue.createApp({
                 url: "http://127.0.0.1:8000/post/1",
                 type: "PUT",
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'title': this.title,
-                    'content': this.content
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
+                data : $("#post_form").serialize(),
                 success: (result) => {
                     console.log(result)
                 },

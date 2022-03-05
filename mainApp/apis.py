@@ -1,45 +1,44 @@
-from django.http import HttpRequest, HttpResponseNotFound, JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseNotFound, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from numpy import put
 from responses import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.utils.timezone import make_aware
 from datetime import datetime as dt
+from django.http import QueryDict
 
 from .models import *
 from .serialisers import *
 
-def postApi(request, post_id: int):
+def postApi(request: HttpRequest, post_id: int):
 
     if not request.user.is_authenticated:
         return HttpResponseNotFound()
 
     if request.method == 'GET':
+        fields = [field.name for field in Post._meta.get_fields()]
         if post_id != 0:
-            post: Post = Post.objects.get(pk=post_id)
+            try:
+                post = Post.objects.filter(pk=post_id).values_list(*fields)[0]
+            except:
+                return HttpResponseNotFound()
             post_json ={ 
-                "title": post.title,
-                "content": post.content,
-                "created_at": post.created_at,
-                "category" : post.category
+                key: value
+                for key, value in zip(fields, post)
             }
             return JsonResponse(post_json)
         else:
-            posts : Post = Post.objects.filter(approved=True)
+            posts : Post = Post.objects.filter(approved=True).values_list(*fields)
             posts_list = [
                 {
-                    "club": post.club.name,
-                    "title": post.title,
-                    "content": post.content,
-                    "created_at": post.created_at,
-                    "category" : post.category
+                    key: value
+                    for key, value in zip(fields, post)
                 }
                 for post in posts
             ]
 
-            
-            
             return JsonResponse({
                 "posts": posts_list
             })
@@ -57,17 +56,21 @@ def postApi(request, post_id: int):
         post.save()
         return JsonResponse({"message": "Done"})
         
+    
     elif request.method == 'PUT':
-        post = Post.objects.get(pk=post_id)
-        print(request.headers)
-        post.title = request.headers.get("title")
-        post.content = request.headers.get("content")
-        post.approved = False
-        post.save()
+        
+        PUT = QueryDict(request.body)
+        data = {
+            item: value
+            for item, value in PUT.items()
+        }
+        print(data)
+        post = Post.objects.filter(pk=post_id).update(**data)
+        
         
         return JsonResponse({"message": "success!!!"})
     elif request.method == r"DELETE":
-        post = Post.objects.get(pk=post_id)
+        post: Post = Post.objects.get(pk=post_id)
         post.delete()
 
 

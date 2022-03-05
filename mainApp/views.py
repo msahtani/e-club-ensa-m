@@ -28,6 +28,6 @@ def update_post(request: HttpRequest, post_id: int):
     post = get_object_or_404(Post, pk=post_id)
 
     if post.author != request.user:
-        return HttpResponseForbidden()
+        return HttpResponse(code=403)
 
     return render(request, 'update_post.htm')
