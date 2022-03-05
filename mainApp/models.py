@@ -16,6 +16,30 @@ from django.utils import timezone
 
 User = get_user_model()
 
+class UserInfo(models.Model):
+
+    class Level(TextChoices):
+        CP1 = 'CP1'
+        CP2 = 'CP2'
+        GE1, GE2, GE3 = 'GE1', 'GE2', 'GE3'
+        G11, G12, G13 = 'G11', 'G12', 'G13'
+        GIL1, GIL2, GIL3 = 'GIL1', 'GIL2', 'GIL3'
+        GS1, GS2, GS3 = 'GS1', 'GS2', 'GS3'
+        RSSP1, RSSP2, RSSP3 = 'RSSP1', 'RSSP2', 'RSSP3'
+        
+    user = ForeignKey(User, models.CASCADE)
+    level = CharField(
+        max_length=5,
+        choices= Level.choices,
+        default= Level.CP1
+    )
+    phone_number = CharField(max_length=13)
+    avatar = CharField(max_length=150)
+    bio = TextField()
+    
+
+
+
 class Club(models.Model):
     id_club = models.AutoField(primary_key=True)
     name = CharField(max_length=50)
