@@ -21,10 +21,10 @@ class UserInfo(models.Model):
     class Level(TextChoices):
         CP1 = 'CP1'
         CP2 = 'CP2'
-        GE1, GE2, GE3 = 'GE1', 'GE2', 'GE3'
+        SEECS1, SEECS2, SEECS3 = 'SEECS1', 'SEECS2', 'SEECS3'
         G11, G12, G13 = 'G11', 'G12', 'G13'
         GIL1, GIL2, GIL3 = 'GIL1', 'GIL2', 'GIL3'
-        GS1, GS2, GS3 = 'GS1', 'GS2', 'GS3'
+        GCDSTE1, GCDSTE2, GCDSTE3 = 'GCDSTE1', 'GCDSTE2', 'GCDSTE3'
         RSSP1, RSSP2, RSSP3 = 'RSSP1', 'RSSP2', 'RSSP3'
         
     user = ForeignKey(User, models.CASCADE)
