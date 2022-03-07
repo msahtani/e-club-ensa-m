@@ -29,7 +29,7 @@ class UserInfo(models.Model):
         
     user = ForeignKey(User, models.CASCADE)
     level = CharField(
-        max_length=5,
+        max_length=7,
         choices= Level.choices,
         default= Level.CP1
     )
@@ -37,8 +37,6 @@ class UserInfo(models.Model):
     avatar = CharField(max_length=150)
     bio = TextField()
     
-
-
 
 class Club(models.Model):
     id_club = models.AutoField(primary_key=True)
@@ -100,8 +98,8 @@ class Post(models.Model):
     class Categories(TextChoices):
         INF = 'INF', ('INFORMATIVE')
         TRN = 'TRN', ('TRAINING_SESSION')
-        STF = 'STF', ('STUFFING_SESSION')
-        FRM = 'FRM', ('FORM')  
+        JNS = 'JNS', ('JOINING_SESSION')
+        FRM = 'FRM', ('FORM') 
 
     id_post = AutoField(primary_key=True)
     title = CharField(max_length=100, null = True)

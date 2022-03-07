@@ -1,0 +1,28 @@
+{% extends 'base.htm' %}
+
+{% load static %}
+<!-- block header -->
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/add_post.css' %}?{% now 'U' %}">
+{% endblock%}
+
+<!-- block content -->
+{% block contents %}
+<script src="https://unpkg.com/vue@3.2.31/dist/vue.global.js"></script>
+
+<div class="container" id="app">
+    <h1> Add Training Session </h1>
+    <form id="post_form" @keyup="validate">
+        <input type="text" name="title" class="form-control" placeholder="title" v-model="title"/>
+        <textarea name="content" class="form-control" placeholder="content" v-model="content"></textarea>
+        <input type="text" name="presented_by" class="form-control" placeholder="presented by" v-model="presented_by" />
+        <input type="datetime-local" name="title" class="form-control" placeholder="title" v-model="started_at" @change="validate" />
+        <input type="number" name="title" class="form-control" placeholder="limited places" v-model="limited_places"/>
+
+        <input class="btn btn-primary" type="submit" value="Add" id="post" @click="submit" :disabled="disbled">
+        
+    </form>
+
+</div>
+<script src="{% static 'js/add_training_session.js' %}?{% now 'U' %}"></script> 
+{% endblock %}

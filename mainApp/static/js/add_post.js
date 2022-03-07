@@ -6,7 +6,7 @@ $('#post').click(
         event.preventDefault()
         var _data = $("#post_form").serialize()
         $.ajax({
-            url: "",
+            url: "http",
             type: "POST",
             data: _data, 
             success: (result) => {

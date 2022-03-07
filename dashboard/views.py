@@ -6,3 +6,6 @@ from django.shortcuts import render
 
 def dashboard_view(request: HttpRequest):
     return render(request, "index.html")
+
+def add_trs_view(request: HttpRequest):
+    return render(request, "add_training_session.html")

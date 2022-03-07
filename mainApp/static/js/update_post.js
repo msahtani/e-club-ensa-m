@@ -22,13 +22,15 @@ var app = Vue.createApp({
         return {
             title: "",
             content: "",
+            url: "",
+
             disbled: true
         }
     },methods: {
         submit(event){
             event.preventDefault()
             $.ajax({
-                url: "http://127.0.0.1:8000/post/1",
+                url: this.url,
                 type: "PUT",
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken')
@@ -46,7 +48,19 @@ var app = Vue.createApp({
         validate(){
             this.disbled = this.title.length == 0 || this.content.length == 0
         }
+    },
+    created(){
+        this.url = window.location.href.replace('/update', '')
+        $.ajax({
+            url: this.url,
+            type: "GET",
+            success: (result) => {
+                this.title = result.title,
+                this.content = result.content
+            }
+        })
     }
+    
 })
 
 app.mount("#app")

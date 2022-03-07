@@ -7,5 +7,6 @@ from django.conf.urls.static import static
 from .views import *
 
 urlpatterns = [
-    path("dashboard", dashboard_view)
+    path("dashboard", dashboard_view),
+    path("dashboard/add_training_session", add_trs_view)
 ]

@@ -1,11 +1,18 @@
 var app = Vue.createApp({
     data(){
         return{
-            username: "",
-            password: ""
+            firstname: "",
+            lastname: "",
+            email: "",
+            password:  "",
+            rpassword: ""
         }
     },
     methods: {
+        validate(){
+            
+        }
+
         login(e){
             e.preventDefault()
             $.ajax({

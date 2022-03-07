@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from rest_framework.response import Response
@@ -14,23 +15,36 @@ from .forms import LoginForm
 
 def login_view(request: HttpRequest):
     next = request.GET.get('next')
-    form = LoginForm(request.POST or None)
 
     if request.user.is_authenticated:
         return redirect(next if next else '/')
-    elif form.is_bound and not(form.is_valid()):
-        return HttpResponse(
-            form.errors.as_text(), status=404
-        )
-    elif form.is_valid():
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-        user = auth(request, username=username, password=password)
-        login(request, user)
-        return redirect(next if next else "/")
+
+    if request.method == "GET":
+        return render(request, 'login.htm')
     
-    context= { 'form': form }
-    return render(request, 'login.htm', context)
+    username_ = request.POST['username']
+    password_ = request.POST['password']
+
+    if not (username_ and password_):
+        JsonResponse({"message": "username and password are required to login "})
+
+    try:
+        User.objects.get(username = username_)
+    except:
+        return JsonResponse({"message": "This user does not exists"})
+        
+
+    user = auth(username= username_, password = password_)
+    if not user:
+        return JsonResponse({"message": "Incorrect password"})
+    if not user.is_active:
+        return JsonResponse({"message": "This user id not active"})
+
+    login(request, user)
+    return redirect(next if next else "/")
+    
+def signup_view(request: HttpRequest):
+    return render(request, 'signup.html')
 
 def forgot_password_view(request:  HttpRequest):
     email = request.GET['email']
@@ -42,8 +56,6 @@ def forgot_password_view(request:  HttpRequest):
     """
     user = User.objects.filter()
     
-
-
 def logout_view(request: HttpRequest):
     logout(request)
     return redirect('/')

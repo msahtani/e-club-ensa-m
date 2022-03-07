@@ -56,20 +56,17 @@ app.component('create-post-modal', {
     methods: {
         add_post(event){
             event.preventDefault()
-            // $.ajax({
-            //     url: "http://127.0.0.1:8000/post/0",
-            //     type: "POST",
-            //     headers: {
-            //         'X-CSRFToken': getCookie('csrftoken')
-            //     },
-            //     data : `title=${this.title}&content=${this.content}`,
-            //      success(result){
-            //         console.log("success !!!")
-            //     }
-            // })
-            console.log(
-                this.started_at
-            )
+            $.ajax({
+                url: "http://127.0.0.1:8000/post/0",
+                type: "POST",
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                data : `title=${this.title}&content=${this.content}`,
+                 success(result){
+                    console.log("success !!!")
+                }
+            })
         },
         hideModal(){
             $("#myModal").fadeOut()
