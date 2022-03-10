@@ -14,13 +14,13 @@
         
   <div id="app">
     <h1> SIGNUP </h1>
-    <form id="login_form" @keyup="validate">
+    <form id="signup_form" @keyup="validate">
       <input type="text" name="firstname" v-model="firstname" class="form-control" placeholder="fistname"/>
       <input type="text" name="lastname" v-model="lastname" class="form-control" placeholder="lastname"/>
       <input type="email" name="email" v-model="email" class="form-control" placeholder="email"/>
       <input type="password" name="password" v-model="password" class="form-control" placeholder="password" />
       <input type="password" name="password" v-model="rpassword" class="form-control" placeholder="confirm password" />
-      <input type="submit" value="login" class="btn btn-primary" @click="login" />
+      <input type="submit" value="login" class="btn btn-primary" @click="signup" :disabled="disbled" />
     </form>    
   </div>
   

@@ -8,10 +8,9 @@ from django.db.models.fields import (
     DateTimeField,
     SmallIntegerField, 
     TextField,
-    URLField
+    URLField,
 )
 from django.db.models.fields.related import ForeignKey
-from django.utils import timezone
 # Create your models here.
 
 User = get_user_model()
@@ -27,7 +26,7 @@ class UserInfo(models.Model):
         GCDSTE1, GCDSTE2, GCDSTE3 = 'GCDSTE1', 'GCDSTE2', 'GCDSTE3'
         RSSP1, RSSP2, RSSP3 = 'RSSP1', 'RSSP2', 'RSSP3'
         
-    user = ForeignKey(User, models.CASCADE)
+    user = ForeignKey(User, models.CASCADE, to_field='username')
     level = CharField(
         max_length=7,
         choices= Level.choices,
@@ -42,7 +41,7 @@ class Club(models.Model):
     id_club = models.AutoField(primary_key=True)
     name = CharField(max_length=50)
     description = TextField()
-    logo = models.ImageField()
+    logo = models.ImageField(upload_to="static/images/club_logos")
 
     def __str__(self):
         return self.name
@@ -103,10 +102,10 @@ class Post(models.Model):
 
     id_post = AutoField(primary_key=True)
     title = CharField(max_length=100, null = True)
-    author = ForeignKey(User, models.CASCADE)
+    author = ForeignKey(User, models.CASCADE, to_field='username')
     content = TextField()
-    # pic_url = CharField(max_length=100, null=True)
     created_at = DateTimeField(auto_now=True)
+    main_pic = models.ImageField(upload_to='static/images/post_pics/', blank=True)
     modified_at = DateTimeField(auto_now=True)
     category = CharField(
         max_length=3,

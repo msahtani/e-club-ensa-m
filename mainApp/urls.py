@@ -3,7 +3,7 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
-from mainApp.apis import postApi
+from mainApp.apis.post_api import postApi
 
 from mainApp.views import *
 

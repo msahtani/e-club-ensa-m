@@ -37,35 +37,46 @@ app.component('create-post-modal', {
         <div class="modal-content">
             <span class="close" @click="hideModal">&times;</span>
             <h1> Create a Post </h1>
-             <form id="post_form">
-                <input class="form-control" type="text" name="title" v-model="title"/>
-                <textarea class="form-control" name="content" v-model="content">  </textarea>
-                <input type="datetime-local" class="form-control" v-model="started_at" />
-                <input class="btn btn-primary" type="submit" value="post" id="post" @click="add_post">
+             <form id="post_form" enctype="multipart/form-data" @submit="add_post">
+                <input type="hidden" name="club" v-model="club" />
+                <input class="form-control" type="text" name="title" v-model="title" placeholder="title" />
+                <textarea class="form-control" name="content" v-model="content" placeholder="content" ></textarea>
+                <input type="file" id="file" name="pic" class="form-control" placeholder="" />
+                <input class="btn btn-primary" type="submit" value="post" id="post">
             </form>
         </div>
     </div>
     `,
     data(){
         return {
-            title: "",
-            content: "",
-            started_at: ""
+            title: "kndlkfnlsdnfknsd",
+            content: "wsllsvlslsldbjsbdfsldbflb",
+            club: 'club informatique'
         }
     },
     methods: {
-        add_post(event){
-            event.preventDefault()
+        add_post(e){
+
+            e.preventDefault()
+
+            var form = new FormData($('form')[0]);
+            form.append('file', $('#file')[0].files[0]);
+            
+
             $.ajax({
                 url: "http://127.0.0.1:8000/post/0",
+                contentType: 'multipart/form-data',
                 type: "POST",
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken')
                 },
-                data : `title=${this.title}&content=${this.content}`,
-                 success(result){
+                data : form,
+                success(result){
                     console.log("success !!!")
-                }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
             })
         },
         hideModal(){

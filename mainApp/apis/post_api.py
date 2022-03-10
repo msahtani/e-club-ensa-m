@@ -1,21 +1,28 @@
-from ctypes.wintypes import POINT
-from django.http import Http404, HttpRequest, HttpResponse, HttpResponseNotFound, JsonResponse
+
+from django.http import HttpRequest, HttpResponseNotFound, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from numpy import put
-from responses import Response
-from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.utils.timezone import make_aware
-from datetime import datetime as dt
 from django.http import QueryDict
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import os
 
-from .models import *
-from .serialisers import *
+from ..models import *
 
 
 def fields(T: models.Model):
     return [field.name for field in T._meta.get_fields()]
+
+
+
+def handle_file_upload(file: InMemoryUploadedFile):
+    f = open("helloworld.png", "ab")
+    print(f)
+    for chunk in file.chunks():
+        f.write(chunk)
+
+    f.close()
+
 
 def postApi(request: HttpRequest, post_id: int):
 
@@ -50,8 +57,8 @@ def postApi(request: HttpRequest, post_id: int):
                     for key, value in zip(jns_fields, jns_data)
                 })
             
-
             return JsonResponse(post_json)
+            
         else:
             posts : Post = Post.objects.filter(approved=True).values_list(*post_fields)
             posts_list = [
@@ -105,14 +112,20 @@ def postApi(request: HttpRequest, post_id: int):
             club = club_,
             author = request.user,
             title = request.POST['title'],
-            content = request.POST['content']
+            content = request.POST['content'],
         )
+
+       
+        post.main_pic = request.FILES['pic']
+        handle_file_upload(request.FILES['pic'])
+        
+
         post.save()
+
         return JsonResponse({"message": "created successfully"})
         
     
     elif request.method == 'PUT':
-
 
         if not(
             request.POST['title'] 
@@ -131,60 +144,3 @@ def postApi(request: HttpRequest, post_id: int):
     elif request.method == r"DELETE":
         post: Post = Post.objects.get(pk=post_id)
         post.delete()
-
-
-def trainingSessionApi(request: HttpRequest, trs_id: int):
-
-    if request.method == 'GET':
-        pass
-
-    elif request.method == 'POST':
-        # create post object
-        post_ = Post(
-            club = get_object_or_404(Club, name="club informatique"), # TODO .....
-            author = request.user,
-            title = request.POST['title'],
-            content = request.POST['content'],
-            category = Post.Categories.TRN
-        )
-        post_.save()
-        
-        TrainingSession(
-            post = post_,
-            limited_places = int(request.POST['limited_places']),
-            presented_by = User.objects.get(username= request.POST['presented_by']),
-            started_at = make_aware(
-                dt.strftime(request.POST['started_at'], '%y-%m-%dT%H:%M')
-            )
-        ).save()
-    
-    elif request.method == 'PUT':
-        pass
-
-
-def trainingRegistrationApi(request: HttpRequest, trs_id):
-    trs = TrainingSession.objects.get(pk=trs_id)
-    if request.method == 'GET':
-        records = TrainingRegistration.objects.all()
-        data = [
-            {
-                "user": record.user.username,
-                "date_of_reg": record.registered_at
-            }
-            for record in records
-        ]
-        return JsonResponse({
-            "data": data
-        })
-    elif request.method == 'POST':
-
-        if trs.limited_places != 0:
-            trg_records = TrainingRegistration.objects.filter(session=trs)
-            if len(trg_records) == trs.limited_places:
-                return JsonResponse({
-                    "message": "the limited place was exeeced !!"
-                })
-        TrainingRegistration(
-            session = trs,
-            user    = request.user
-        ).save()

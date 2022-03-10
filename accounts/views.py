@@ -8,7 +8,6 @@ from django.contrib.auth import get_user, authenticate as auth, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-from .forms import LoginForm
 
 # Create your views here.
 
@@ -44,7 +43,34 @@ def login_view(request: HttpRequest):
     return redirect(next if next else "/")
     
 def signup_view(request: HttpRequest):
-    return render(request, 'signup.html')
+
+    # check if the user is authenticated ... 
+    if request.user.is_authenticated:
+        return redirect('/')
+
+    if request.method == 'GET':
+        return render(request, 'signup.html')
+
+    fname, lname = request.POST['firstname'], request.POST['lastname']
+    username_ = fname.replace(' ', '_') + '_' + lname.replace(' ', '_')
+    username_ = username_.lower() # to lowercase 
+    password = request.POST['password']
+    user = User(
+        first_name = fname,
+        last_name = lname,
+        username = username_,
+        email = request.POST['email']
+    )
+
+    user.set_password(password)
+    user.save()
+
+    login(request, user)
+
+    return JsonResponse({"message": "created successfully ... "})
+
+
+    
 
 def forgot_password_view(request:  HttpRequest):
     email = request.GET['email']
