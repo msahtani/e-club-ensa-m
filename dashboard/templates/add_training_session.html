@@ -9,12 +9,16 @@
 <!-- block content -->
 {% block contents %}
 <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.js"></script>
+<script src="{% static 'js/cookies.js' %}?{% now 'U' %}"></script> 
+
 
 <div class="container" id="app">
     <h1> Add Training Session </h1>
-    <form id="post_form" @keyup="validate">
+    <form id="post_form" @keyup="validate" enctype="multipart/form-data">
+
         <input type="text" name="title" class="form-control" placeholder="title" v-model="title"/>
         <textarea name="content" class="form-control" placeholder="content" v-model="content"></textarea>
+        <input type="file" id="file" class="form-control" name="pic" />
         <input type="text" name="presented_by" class="form-control" placeholder="presented by" v-model="presented_by" />
         <input type="datetime-local" name="title" class="form-control" placeholder="title" v-model="started_at" @change="validate" />
         <input type="number" name="title" class="form-control" placeholder="limited places" v-model="limited_places"/>

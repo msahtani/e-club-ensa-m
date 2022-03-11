@@ -38,7 +38,6 @@ app.component('create-post-modal', {
             <span class="close" @click="hideModal">&times;</span>
             <h1> Create a Post </h1>
              <form id="post_form" enctype="multipart/form-data" @submit="add_post">
-                <input type="hidden" name="club" v-model="club" />
                 <input class="form-control" type="text" name="title" v-model="title" placeholder="title" />
                 <textarea class="form-control" name="content" v-model="content" placeholder="content" ></textarea>
                 <input type="file" id="file" name="pic" class="form-control" placeholder="" />
@@ -61,7 +60,7 @@ app.component('create-post-modal', {
 
             var form = new FormData($('form')[0]);
             form.append('file', $('#file')[0].files[0]);
-            
+            form.append('club', this.club)
 
             $.ajax({
                 url: "http://127.0.0.1:8000/post/0",

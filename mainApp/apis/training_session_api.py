@@ -5,36 +5,47 @@ from django.utils.timezone import make_aware
 from django.http import QueryDict
 from datetime import datetime as dt
 import os
+from django.views import View
 
 from ..models import *
-from .post_api import postApi
+from .post_api import PostApi
 
 
-def trainingSessionApi(request: HttpRequest, trs_id: int):
+
+class TrainingSessionApi(View):
     
-    if request.method == 'GET':
+    
+    def get(self, request: HttpRequest, trs_id: int):
         pass
 
-    elif request.method == 'POST':
+    def post(self, request: HttpRequest, trs_id: int):
         # create post object
-        postApi(request, 0)
+        PostApi(request, 0)
         post_: Post = Post.objects.order_by('created_at')[-1]
         post_.category = Post.Categories.TRN
         post_.save()
         TrainingSession.objects.create(
-             post = post_,
+            post = post_,
             limited_places = int(request.POST['limited_places']),
             presented_by = User.objects.get(username= request.POST['presented_by']),
             started_at = make_aware(
                 dt.strftime(request.POST['started_at'], '%y-%m-%dT%H:%M')
             )
         )
-        TrainingSession(
-           
-        ).save()
     
-    elif request.method == 'PUT':
-        pass
+    def put(self, request: HttpRequest, trs_id: int):
+        trs: TrainingSession = TrainingSession.objects.get(pk=trs_id)
+        PostApi(request, trs.post.id_post)
+
+        PUT = QueryDict(request.body)
+        TrainingSession.objects.filter(pk=trs_id).update(
+            limited_places = int(PUT['limited_places']),
+            presented_by = User.objects.get(username= PUT['presented_by']),
+            started_at = make_aware(
+                dt.strftime(PUT['started_at'], '%y-%m-%dT%H:%M')
+            )
+        )
+
 
 
 def trainingRegistrationApi(request: HttpRequest, trs_id):

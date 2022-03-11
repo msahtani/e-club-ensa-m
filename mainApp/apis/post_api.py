@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.utils.timezone import make_aware
 from django.http import QueryDict
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.views import View
 import os
 
 from ..models import *
@@ -14,22 +15,19 @@ def fields(T: models.Model):
     return [field.name for field in T._meta.get_fields()]
 
 
+class PostApi(View):
 
-def handle_file_upload(file: InMemoryUploadedFile):
-    f = open("helloworld.png", "ab")
-    print(f)
-    for chunk in file.chunks():
-        f.write(chunk)
+    def __init__(self, request: HttpRequest, post_id: int):
+        if request.method == 'GET':
+            self.get(request, post_id)
+        elif request.method == 'POST':
+            self.post(request, post_id)
+        elif request.method == 'PUT':
+            self.put(request, post_id)
+        elif request.method == r'DELETE':
+            self.delete(request, post_id)
 
-    f.close()
-
-
-def postApi(request: HttpRequest, post_id: int):
-
-    if not request.user.is_authenticated:
-        return HttpResponseNotFound()
-
-    if request.method == 'GET':
+    def get(self, request: HttpRequest, post_id):
         post_fields = fields(Post)
         
         if post_id != 0:
@@ -49,7 +47,7 @@ def postApi(request: HttpRequest, post_id: int):
                     for key, value in zip(trs_fields, trs_data)
                 })
                 
-            elif ["category"] == Post.Categories.JNS:
+            elif post_json["category"] == Post.Categories.JNS:
                 jns_fields = fields(JoiningSession)
                 jns_data = JoiningSession.objects.filter(post=post_).values_list(*jns_fields)[0]
                 post_json.update({
@@ -60,7 +58,7 @@ def postApi(request: HttpRequest, post_id: int):
             return JsonResponse(post_json)
             
         else:
-            posts : Post = Post.objects.filter(approved=True).values_list(*post_fields)
+            posts : Post = Post.objects.all().values_list(*post_fields)
             posts_list = [
                 {
                     key: value
@@ -91,16 +89,15 @@ def postApi(request: HttpRequest, post_id: int):
                 "posts": posts_list
             })
             
+    def post(self, request:HttpRequest, post_id = 0):
 
-    elif request.method == 'POST':
-
-        club_ = get_object_or_404(Club, name=request.POST['club'])
+        club_ = get_object_or_404(Club, name=request.POST.get('club'))
 
         if not(
-            request.POST['title'] 
-            and request.POST['content'] 
-            and request.POST['club']
-        ): return JsonResponse({"message": "title, content and club name are required ... "})
+            request.POST.get('title') 
+            and request.POST.get('content') 
+            and request.POST.get('club')
+        ): return JsonResponse({"message": "title and content are required ... "})
 
         if not MemberShip.objects.get(
             user=request.user,
@@ -108,24 +105,16 @@ def postApi(request: HttpRequest, post_id: int):
             state=MemberShip.State.ACTIVE
         ): return JsonResponse({"message": "denied ...."})
 
-        post = Post(
+        post = Post.objects.create(
             club = club_,
             author = request.user,
             title = request.POST['title'],
             content = request.POST['content'],
+            main_pic = request.FILES['pic']
         )
-
-       
-        post.main_pic = request.FILES['pic']
-        handle_file_upload(request.FILES['pic'])
-        
-
-        post.save()
-
         return JsonResponse({"message": "created successfully"})
         
-    
-    elif request.method == 'PUT':
+    def put(self, request:HttpRequest, post_id):
 
         if not(
             request.POST['title'] 
@@ -141,6 +130,6 @@ def postApi(request: HttpRequest, post_id: int):
         
         return JsonResponse({"message": "success!!!"})
         
-    elif request.method == r"DELETE":
+    def delete(self, request:HttpRequest, post_id):
         post: Post = Post.objects.get(pk=post_id)
         post.delete()
