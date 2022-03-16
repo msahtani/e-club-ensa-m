@@ -10,8 +10,9 @@ from mainApp.views import *
 urlpatterns = [
     #path('<str:club_name>/create', add_post),
     path('club/<str:club_name>/', club_profile),
+    path('club/<str:club_name>/post/<int:post_id>', PostApi.as_view()),
+    path('post/<int:post_id>', PostApi.as_view()),
     path('post/<int:post_id>/update', update_post),
-    path('post/<int:post_id>', PostApi.as_view())
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
