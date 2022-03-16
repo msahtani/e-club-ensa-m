@@ -115,13 +115,16 @@ class Post(models.Model):
     approved = BooleanField(default=False)
 
     def __str__(self):
-        return self.id_post
+        return self.title
 
 class TrainingSession(Post):
     limited_places = SmallIntegerField(default=0)
     started_at = DateTimeField()
     presented_by = ForeignKey(User, models.SET_NULL, null = True)
     cencelled = BooleanField(default=False)
+
+    def __str__(self):
+        return self.id_post
 
 
 class TrainingRegistration(models.Model):
