@@ -1,7 +1,6 @@
 from django.http import HttpResponseForbidden, JsonResponse
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user

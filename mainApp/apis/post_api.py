@@ -17,7 +17,10 @@ def fields(T: models.Model):
 
 class PostApi(View):
 
-    def __init__(self, request: HttpRequest, post_id: int):
+    def __init__(self, request: HttpRequest = None, post_id: int = None):
+        if not request:
+            return
+
         if request.method == 'GET':
             self.get(request, post_id)
         elif request.method == 'POST':
@@ -39,21 +42,21 @@ class PostApi(View):
                 key: value
                 for key, value in zip(post_fields, post_)
             }
-            if post_json["category"] ==  Post.Categories.TRN:
-                trs_fields = fields(TrainingSession)
-                trs_data = TrainingSession.objects.filter(post=post_).values_list(*trs_fields)[0]
-                post_json.update({
-                    key: value
-                    for key, value in zip(trs_fields, trs_data)
-                })
+            # if post_json["category"] ==  Post.Categories.TRN:
+            #     trs_fields = fields(TrainingSession)
+            #     trs_data = TrainingSession.objects.filter(post=post_).values_list(*trs_fields)[0]
+            #     post_json.update({
+            #         key: value
+            #         for key, value in zip(trs_fields, trs_data)
+            #     })
                 
-            elif post_json["category"] == Post.Categories.JNS:
-                jns_fields = fields(JoiningSession)
-                jns_data = JoiningSession.objects.filter(post=post_).values_list(*jns_fields)[0]
-                post_json.update({
-                    key: value
-                    for key, value in zip(jns_fields, jns_data)
-                })
+            # elif post_json["category"] == Post.Categories.JNS:
+            #     jns_fields = fields(JoiningSession)
+            #     jns_data = JoiningSession.objects.filter(post=post_).values_list(*jns_fields)[0]
+            #     post_json.update({
+            #         key: value
+            #         for key, value in zip(jns_fields, jns_data)
+            #     })
             
             return JsonResponse(post_json)
             
@@ -89,14 +92,13 @@ class PostApi(View):
                 "posts": posts_list
             })
             
-    def post(self, request:HttpRequest, post_id = 0):
+    def post(self, request:HttpRequest, club_name):
 
-        club_ = get_object_or_404(Club, name=request.POST.get('club'))
+        club_ = get_object_or_404(Club, name=club_name)
 
         if not(
             request.POST.get('title') 
             and request.POST.get('content') 
-            and request.POST.get('club')
         ): return JsonResponse({"message": "title and content are required ... "})
 
         if not MemberShip.objects.get(
@@ -110,9 +112,12 @@ class PostApi(View):
             author = request.user,
             title = request.POST['title'],
             content = request.POST['content'],
-            main_pic = request.FILES['pic']
+            main_pic = request.FILES.get('pic')
         )
-        return JsonResponse({"message": "created successfully"})
+        return JsonResponse({
+            "message": "created successfully",
+            "id": post.id_post
+        })
         
     def put(self, request:HttpRequest, post_id):
 

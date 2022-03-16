@@ -36,12 +36,11 @@ class UserInfo(models.Model):
     avatar = CharField(max_length=150)
     bio = TextField()
     
-
 class Club(models.Model):
     id_club = models.AutoField(primary_key=True)
     name = CharField(max_length=50)
     description = TextField()
-    logo = models.ImageField(upload_to="static/images/club_logos")
+    logo = models.ImageField(upload_to="images/club_logos")
 
     def __str__(self):
         return self.name
@@ -82,7 +81,7 @@ class MemberShip(models.Model):
     cell = ForeignKey(Cell, models.SET_NULL, null=True, blank=True)
     date_of_join = DateTimeField(auto_now=True)
     state = SmallIntegerField(choices=State.choices, default=0)
-    presentation = TextField(max_length=1000, null=True) #added in dec 31th,2021 17:06
+    presentation = TextField(max_length=1000, blank=True) #added in dec 31th,2021 17:06
     notif_setting = CharField(
         max_length= 4,
         choices= Notification.choices,
@@ -105,7 +104,7 @@ class Post(models.Model):
     author = ForeignKey(User, models.CASCADE, to_field='username')
     content = TextField()
     created_at = DateTimeField(auto_now=True)
-    main_pic = models.ImageField(upload_to='static/images/post_pics/', blank=True)
+    main_pic = models.ImageField(upload_to='images/post_pics/', blank=True)
     modified_at = DateTimeField(auto_now=True)
     category = CharField(
         max_length=3,
@@ -116,32 +115,25 @@ class Post(models.Model):
     approved = BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return self.id_post
 
-class TrainingSession(models.Model):
-    id_session = AutoField(primary_key=True)
-    post = ForeignKey(Post, models.SET_NULL, null = True)
+class TrainingSession(Post):
     limited_places = SmallIntegerField(default=0)
     started_at = DateTimeField()
     presented_by = ForeignKey(User, models.SET_NULL, null = True)
     cencelled = BooleanField(default=False)
 
-    def __str__(self):
-        return self.post.title
 
 class TrainingRegistration(models.Model):
     user = ForeignKey(User, models.CASCADE)
     session = ForeignKey(TrainingSession, models.CASCADE)
+    token = CharField(max_length=64, blank=True)
+    confirmed = BooleanField(default=False)
     registered_at = DateTimeField(auto_now=True)
 
-class JoiningSession(models.Model):
-    id_session = AutoField(primary_key=True)
-    post = ForeignKey(Post, models.SET_NULL, null = True)
+
+class JoiningSession(Post):
     started_at = DateTimeField()
     end_at = DateTimeField()
     canceled = BooleanField(default=False)
-
-# v 2
-class Forms(models.Model):
-    post = ForeignKey(Post, models.SET_NULL, null = True)
-    content = URLField()
+    

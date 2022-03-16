@@ -4,6 +4,7 @@
 <!-- block header -->
 {% block header %}
 <link rel="stylesheet" href="{% static 'css/add_post.css' %}?{% now 'U' %}">
+<link rel="stylesheet" href="{% static 'css/add_training_session.css' %}?{% now 'U' %}">
 {% endblock%}
 
 <!-- block content -->
@@ -14,14 +15,20 @@
 
 <div class="container" id="app">
     <h1> Add Training Session </h1>
-    <form id="post_form" @keyup="validate" enctype="multipart/form-data">
+    <form id="post_form" @keyup="validate" enctype="multipart/form-data" autocomplete="off">
 
         <input type="text" name="title" class="form-control" placeholder="title" v-model="title"/>
         <textarea name="content" class="form-control" placeholder="content" v-model="content"></textarea>
         <input type="file" id="file" class="form-control" name="pic" />
-        <input type="text" name="presented_by" class="form-control" placeholder="presented by" v-model="presented_by" />
-        <input type="datetime-local" name="title" class="form-control" placeholder="title" v-model="started_at" @change="validate" />
-        <input type="number" name="title" class="form-control" placeholder="limited places" v-model="limited_places"/>
+        <div class="autocomplete">
+            <input type="text" name="presented_by" class="form-control" placeholder="presented by" v-model="presented_by" @keyup.enter="getUsers" />
+            <ul class="autocomplete-results" v-show="isOpen">
+                <li class="autocomplete-result" v-for="result in results" @click="select"> [[ result ]]</li>
+            </ul>
+        </div>
+
+        <input type="datetime-local" name="started_at" class="form-control" placeholder="title" v-model="started_at" @change="validate" />
+        <input type="number" name="limited_places" class="form-control" placeholder="limited places" v-model="limited_places"/>
 
         <input class="btn btn-primary" type="submit" value="Add" id="post" @click="submit" :disabled="disbled">
         
