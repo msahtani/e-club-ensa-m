@@ -38,25 +38,12 @@ class PostApi(View):
                 post_ = Post.objects.filter(pk=post_id).values_list(*post_fields)[0]
             except:
                 return HttpResponseNotFound()
+                
             post_json ={ 
                 key: value
                 for key, value in zip(post_fields, post_)
             }
-            # if post_json["category"] ==  Post.Categories.TRN:
-            #     trs_fields = fields(TrainingSession)
-            #     trs_data = TrainingSession.objects.filter(post=post_).values_list(*trs_fields)[0]
-            #     post_json.update({
-            #         key: value
-            #         for key, value in zip(trs_fields, trs_data)
-            #     })
-                
-            # elif post_json["category"] == Post.Categories.JNS:
-            #     jns_fields = fields(JoiningSession)
-            #     jns_data = JoiningSession.objects.filter(post=post_).values_list(*jns_fields)[0]
-            #     post_json.update({
-            #         key: value
-            #         for key, value in zip(jns_fields, jns_data)
-            #     })
+            
             
             return JsonResponse(post_json)
             

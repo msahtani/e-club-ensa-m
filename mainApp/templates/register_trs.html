@@ -1,0 +1,26 @@
+{% extends 'base.htm' %}
+
+{% load static %}
+
+{% block contents %}
+<script src="{% static 'js/cookies.js' %}?{% now 'U' %}"></script>
+<div>
+    <h1>
+        HELLO WORLD
+    </h1>
+</div>
+
+<script>
+    $.ajax({
+        url: "",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        success(result){
+            console.log(result)
+        }
+
+    })
+</script>
+{% endblock %}

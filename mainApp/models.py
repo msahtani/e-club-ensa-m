@@ -1,3 +1,4 @@
+from random import choice
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models.enums import IntegerChoices, TextChoices
@@ -11,6 +12,7 @@ from django.db.models.fields import (
     URLField,
 )
 from django.db.models.fields.related import ForeignKey
+from django.forms import IntegerField
 # Create your models here.
 
 User = get_user_model()
@@ -115,7 +117,7 @@ class Post(models.Model):
     approved = BooleanField(default=False)
 
     def __str__(self):
-        return self.id_post
+        return self.title
 
 class TrainingSession(Post):
     limited_places = SmallIntegerField(default=0)
@@ -131,9 +133,28 @@ class TrainingRegistration(models.Model):
     confirmed = BooleanField(default=False)
     registered_at = DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.token
+
 
 class JoiningSession(Post):
     started_at = DateTimeField()
     end_at = DateTimeField()
     canceled = BooleanField(default=False)
+
+# class Permission(models.Model):
+    
+#     class Perms(IntegerChoices):
+
+#         ALL_PRM = 1, ("all the permissions")
+#         ADD_TRS = 2, ("add training session")
+#         ADD_PRJ = 3, ("add projects")
+#         ADD_JNS = 4, ("add joining sessions")
+#         VRF_TRG = 5, ("verify a training registration")
+
+#     code = IntegerField(choice=Perms.choices)
+#     user = ForeignKey(User, models.CASCADE)
+#     club = ForeignKey(Club, models.CASCADE)
+
+    
     
