@@ -63,7 +63,7 @@ app.component('create-post-modal', {
             form.append('club', this.club)
 
             $.ajax({
-                url: "http://127.0.0.1:8000/post/0",
+                url: window.location.href + "post/0",
                 contentType: 'multipart/form-data',
                 type: "POST",
                 headers: {
@@ -71,7 +71,7 @@ app.component('create-post-modal', {
                 },
                 data : form,
                 success(result){
-                    console.log("success !!!")
+                    console.log(result)
                 },
                 cache: false,
                 contentType: false,

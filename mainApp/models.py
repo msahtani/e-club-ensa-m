@@ -125,6 +125,9 @@ class TrainingSession(Post):
     presented_by = ForeignKey(User, models.SET_NULL, null = True)
     cencelled = BooleanField(default=False)
 
+    def __str__(self):
+        return self.id_post
+
 
 class TrainingRegistration(models.Model):
     user = ForeignKey(User, models.CASCADE)

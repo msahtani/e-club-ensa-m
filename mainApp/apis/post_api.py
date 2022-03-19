@@ -57,29 +57,12 @@ class PostApi(View):
                 for post in posts
             ]
 
-            for i in range(len(posts)):
-
-                if posts_list[i]["category"] ==  Post.Categories.TRN:
-                    trs_fields = fields(TrainingSession)
-                    trs_data = TrainingSession.objects.filter(post=posts[i]).values_list(*trs_fields)[0]
-                    posts_list[i].update({
-                        key: value
-                        for key, value in zip(trs_fields, trs_data)
-                    })
-                
-                elif posts_list[i]["category"] == Post.Categories.JNS:
-                    jns_fields = fields(JoiningSession)
-                    jns_data = JoiningSession.objects.filter(post=posts[i]).values_list(*jns_fields)[0]
-                    posts_list[i].update({
-                        key: value
-                        for key, value in zip(jns_fields, jns_data)
-                    })
-
+    
             return JsonResponse({
                 "posts": posts_list
             })
             
-    def post(self, request:HttpRequest, club_name):
+    def post(self, request:HttpRequest, club_name, post_id):
 
         club_ = get_object_or_404(Club, name=club_name)
 
@@ -88,11 +71,11 @@ class PostApi(View):
             and request.POST.get('content') 
         ): return JsonResponse({"message": "title and content are required ... "})
 
-        if not MemberShip.objects.get(
+        if MemberShip.objects.filter(
             user=request.user,
             club=club_,
             state=MemberShip.State.ACTIVE
-        ): return JsonResponse({"message": "denied ...."})
+        ).count() == 0: return JsonResponse({"message": "denied ...."})
 
         post = Post.objects.create(
             club = club_,
@@ -103,7 +86,7 @@ class PostApi(View):
         )
         return JsonResponse({
             "message": "created successfully",
-            "id": post.id_post
+            "id": post.pk
         })
         
     def put(self, request:HttpRequest, post_id):
