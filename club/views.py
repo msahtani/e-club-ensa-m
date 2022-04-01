@@ -1,21 +1,29 @@
+from django.shortcuts import render
+
 from django.http import HttpRequest, HttpResponseNotFound, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from django.utils.timezone import make_aware
 from django.http import QueryDict
 from datetime import datetime as dt
 from django.views import View
 
-from ..models import *
-from .post_api import PostApi
+from mainApp.views import ajax
+
+from .models import *
+from membership.models import MemberShip
+
 
 
 class ClubApi(View):
 
-    def __init__(self):
-        pass
+    def __init__(self, request):
+        self.__request = request
 
     def get(self, request: HttpRequest, club_name):
+
+        if not ajax(request):
+            return render(request, 'club_profile.htm')
         
         club_: Club = Club.objects.get(name=club_name)
         memebers = MemberShip.objects.filter(
@@ -58,55 +66,92 @@ class ClubApi(View):
     def delete(self, request):
         pass
 
-
 class CellApi(View):
 
-    def __init__(self, request, club_name):
-        self.club = Club.objects.get(name=club_name)
+    def __init__(self, request: HttpRequest):
+        self.__req = request
+
+    def club(club_name):
+        return  Club.objects.get(name=club_name)
 
     def get(self, request: HttpRequest, club_name):
+
         cells = Cell.objects.filter(
-            club = self.club
+            club = self.club(club_name)
         )
 
         json_data = {
             "cells": {
                 str(cell_): str(MemberShip.objects.get(grade = MemberShip.Grades.CLM, cell=cell_)).split(' --')[0]
                 for cell_ in cells
-            }
-        }
+            }}
+        
         return JsonResponse(json_data)
 
     def post(self, request: HttpRequest, club_name):
 
-        if Cell.objects.filter(club = self.club, name=request.POST['name']).count != 0:
+        if Cell.objects.filter(club = self.club(club_name), name=request.POST['name']).count != 0:
             return JsonResponse({
                 'message':  'this name is already exists ...'
             })
 
-        cell = Cell(
+        cell_ = Cell.objects.create(
             **request.POST,
-            club= self.club
-        ).save()
+            club= self.club(club_name)
+        )
 
         # TODO : assign a cell manager
+        self.assign_cell_manager(cell_, request.POST['username'])
         
         return JsonResponse({
-            "message": '"{}"' % cell.name + "is created successfully"
+            "message": '"%s"' % cell_.name + "is created successfully"
         })
 
     def put(self, request: HttpRequest, club_name, cell_name):
         
         PUT = QueryDict(request.body)
 
-        cell = Cell.objects.filter(
+        cell_ = Cell.objects.filter(
             club = Club.objects.get(name=club_name),
             name = cell_name
         ).update(**PUT)
 
-        # TODO : change the cell manager
+        
+        self.assign_cell_manager(cell_, PUT['username'])
+        
         return JsonResponse({
             "message": "updated successfully"
         })
-    def delete(self, request: HttpRequest):
-        pass
+
+    
+    def delete(self, request: HttpRequest, club_name, cell_name):
+        cell: Cell = Cell.objects.get(
+            club = self.club(club_name),
+            name = cell_name
+        )
+        cell.delete()
+        
+
+    def assign_cell_manager(self, cell_: Cell, username_):
+        user_ = User.objects.get(username = username_)
+        cell_members = MemberShip.objects.filter(
+            club = self.club,
+            cell = cell_
+        )
+
+        if cell_members.filter(grade = MemberShip.Grades.CLM).count() == 0:
+            if cell_members.filter(user = user_).count() == 0:
+                cell_members.create(
+                    user = user_,
+                    grade = MemberShip.Grades.CLM )
+            else:
+                cell_members.filter(user = user_).update(grade = MemberShip.Grades.CLM)
+        else:
+            mbr = cell_members.filter(grade = MemberShip.Grades.CLM)
+            if mbr[0].user != user_:
+                mbr.update(
+                    grade = MemberShip.Grades.MBR
+                )
+                cell_members.filter(user = user_).update(
+                    grade = MemberShip.Grades.CLM
+                )

@@ -6,7 +6,7 @@ from django.utils.timezone import make_aware
 from django.http import QueryDict
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views import View
-import os
+from . import ajax
 
 from ..models import *
 
@@ -63,6 +63,10 @@ class PostApi(View):
             })
             
     def post(self, request:HttpRequest, club_name, post_id):
+
+        if not ajax(request):
+            pass
+
 
         club_ = get_object_or_404(Club, name=club_name)
 

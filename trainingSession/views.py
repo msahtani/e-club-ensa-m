@@ -1,26 +1,31 @@
+from django.shortcuts import render
+
 from django.conf import settings
-from django.http import HttpRequest, HttpResponse, HttpResponseNotFound, JsonResponse, QueryDict
+from django.http import HttpRequest, HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.utils.timezone import make_aware
 from datetime import datetime as dt
 from django.views import View
 from django.db.models import Q
+from django.utils.decorators import method_decorator
 
-from ..models import *
-from .post_api import PostApi
+from .models import *
+from club.models import Club
+from membership.models import MemberShip
+
+from . import ajax
 
 import qrcode
 from hashlib import sha256
 from uuid import uuid4
 
-def ajax(request):
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-
 
 class TrainingSessionApi(View):
     
-    def __init__(self):
+    @method_decorator(login_required)
+    def __init__(self, request: HttpRequest = None):
         pass
         # TODO: checking the user permissions .... 
     
@@ -43,23 +48,30 @@ class TrainingSessionApi(View):
             presented_by = User.objects.get(username= request.POST['presented_by']),
             started_at = make_aware(
                 dt.strptime(request.POST['started_at'], '%Y-%m-%dT%H:%M')
-            )
+            ),
+            approved = True
         )
 
         return JsonResponse({"message": "success !!! "})
     
     def put(self, request: HttpRequest, trs_id: int):
-        trs: TrainingSession = TrainingSession.objects.get(pk=trs_id)
-        PostApi(request, trs.post.id_post)
 
         PUT = QueryDict(request.body)
-        TrainingSession.objects.filter(pk=trs_id).update(
-            limited_places = int(PUT['limited_places']),
-            presented_by = User.objects.get(username= PUT['presented_by']),
-            started_at = make_aware(
-                dt.strptime(PUT['started_at'], '%Y-%m-%dT%H:%M')
+        TrainingSession.objects  \
+            .filter(pk=trs_id) \
+            .update(
+                title = PUT['titile'],
+                content = PUT['content'],
+                limited_places = int(PUT['limited_places']),
+                presented_by = User.objects.get(username= PUT['presented_by']),
+                started_at = make_aware(
+                    dt.strptime(PUT['started_at'], '%Y-%m-%dT%H:%M')
+                )
             )
-        )
+
+        return JsonResponse({
+            'message': 'updated successfully !!'
+        })
 
 
 class TrainingRegistrationApi(View):
@@ -67,6 +79,7 @@ class TrainingRegistrationApi(View):
     
     def session(self, trs_id):
         return TrainingSession.objects.get(pk=trs_id)
+
 
     def get(self, request: HttpRequest, trs_id: int):
         if not request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
@@ -84,8 +97,9 @@ class TrainingRegistrationApi(View):
             "data": data
         })
 
+
     def post(self, request: HttpRequest, trs_id: int):
-        
+
         trs: TrainingSession = self.session(trs_id)
         
         if TrainingRegistration.objects.filter(
@@ -132,11 +146,10 @@ def confirm(request: HttpRequest):
         TrainingRegistration,
         token = request.GET['token']
     )
-    club_: Club = trg.session.club
 
     if MemberShip.objects.filter(
         user = request.user,
-        club = club_,
+        club = trg.session.club,
     ).filter(
         Q(grade = MemberShip.Grades.PRS) | Q(grade = MemberShip.Grades.VPR)
     ).count == 0: return HttpRequest("permission denied ...")
