@@ -40,12 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # my apps
     'accounts',
     'club',
     'membership',
     'trainingSession',
-    'mainApp',
-    'dashboard'
+    'dashboard',
+    'post',
+    'home'
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mainApp/media')
 
 AUTH_USER_MODEL = 'accounts.Student'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'sahtanimohcine19@gmail.com'
+EMAIL_HOST_PASSWORD = 'xescnacmsythgopp'
+EMAIL_USE_TLS = True

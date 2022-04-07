@@ -20,14 +20,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from accounts.views import *
-from mainApp.views import *
+from home.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # include accounts urls
     path('', include('accounts.urls')),
     # include mainApp (deprecated) urls
-    path('', include('mainApp.urls')),
+    path('', include('home.urls')),
     # include club dashboard urls
     path('', include('dashboard.urls')),
     # include membership urls

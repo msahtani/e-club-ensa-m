@@ -9,13 +9,13 @@ from django.db.models.fields import (
     TextField,
 )
 from django.db.models.fields.related import ForeignKey
-# TODO: import Club, Cell, Post
+
 from club.models import *
-from mainApp.models import *
+from post.models import *
 
 User = get_user_model()
 
-# Create your models here.
+
 class MemberShip(models.Model):
     
     class Grades(TextChoices):

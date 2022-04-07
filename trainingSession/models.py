@@ -6,11 +6,10 @@ from django.db.models.fields import (
     TextField,
     SmallIntegerField,
     DateTimeField,
-    BooleanField
-)
+    BooleanField)
 from django.db.models.fields.related import ForeignKey
 
-from mainApp.models import Post
+from post.models import Post
 
 User = get_user_model()
 # Create your models here.

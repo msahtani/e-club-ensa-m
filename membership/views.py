@@ -1,23 +1,7 @@
 from urllib import request
-from django.shortcuts import get_object_or_404, render
-
-# Create your views here.
-# TODO : 
-
-# Membership API
-    # get memeber for each club or each cell of the club
-    # add a member: by Joining Session, invite link or added by the admin have a permission of that 
-    # update the state of the membership
-    # delete a member
-
-# Joining Session API
-    # create a joining session
-    # update
-    # delete
-
+from django.shortcuts import get_object_or_404
 from django.http import HttpRequest, JsonResponse, QueryDict
 from django.views import View
-
 from .models import *
 from datetime import datetime as dt
 from django.utils.timezone import make_aware, now
@@ -115,6 +99,7 @@ class MembershipAPI(View):
 class JoiningSessionAPI(View):
     
     def __init__(self):
+
         QDICT = QueryDict(request.body)
         if not has_perm(
             request.user,
@@ -142,7 +127,6 @@ class JoiningSessionAPI(View):
                 dt.strptime(request.POST['end_at'], '%Y-%m-%dT%H:%M')
             )
         )
-
     
     def post(self, request: HttpRequest, jns_id):
         

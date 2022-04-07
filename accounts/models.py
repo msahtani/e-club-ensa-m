@@ -1,12 +1,15 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models.enums import IntegerChoices, TextChoices
+from django.db.models.enums import TextChoices
 from django.db.models.fields import ( 
     CharField, 
     TextField,
+    DateTimeField
 )
-from django.forms import ImageField
+from django.db.models.fields.related import ForeignKey
 
 # Create your models here.
 class Student(AbstractUser):
@@ -28,3 +31,13 @@ class Student(AbstractUser):
     phone_number = CharField(max_length=13, blank=True)
     avatar = models.ImageField(upload_to='image/avatars', blank=True)
     bio = TextField(blank=True)
+
+class ResetPasswordTokens(models.Model):
+    user = ForeignKey(Student, models.CASCADE, to_field='username')
+    token = CharField(max_length=64)
+    expire_time = DateTimeField(
+        default=timezone.now() + timedelta(minutes=30)
+    )
+
+    def expired(self):
+        return self.expire_time < timezone.now()
