@@ -8,17 +8,13 @@ from django.http import QueryDict
 from datetime import datetime as dt
 from django.views import View
 
-from mainApp.views import ajax
+from utils import ajax
 
 from .models import *
 from membership.models import MemberShip
 
 
-
 class ClubApi(View):
-
-    def __init__(self, request):
-        self.__request = request
 
     def get(self, request: HttpRequest, club_name):
 
@@ -68,24 +64,21 @@ class ClubApi(View):
 
 class CellApi(View):
 
-    def __init__(self, request: HttpRequest):
-        self.__req = request
-
     def club(club_name):
         return  Club.objects.get(name=club_name)
 
     def get(self, request: HttpRequest, club_name):
-
+        # get cells of the given club object
         cells = Cell.objects.filter(
             club = self.club(club_name)
         )
-
+        # from ORM to JSON
         json_data = {
             "cells": {
                 str(cell_): str(MemberShip.objects.get(grade = MemberShip.Grades.CLM, cell=cell_)).split(' --')[0]
                 for cell_ in cells
             }}
-        
+        # send the JSON DATA
         return JsonResponse(json_data)
 
     def post(self, request: HttpRequest, club_name):
@@ -116,7 +109,6 @@ class CellApi(View):
             name = cell_name
         ).update(**PUT)
 
-        
         self.assign_cell_manager(cell_, PUT['username'])
         
         return JsonResponse({

@@ -24,17 +24,19 @@ from home.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # include accounts urls
+    # accounts
     path('', include('accounts.urls')),
-    # include mainApp (deprecated) urls
+    # home
     path('', include('home.urls')),
-    # include club dashboard urls
+    # club
     path('', include('dashboard.urls')),
-    # include membership urls
+    # membership
     path('', include('membership.urls')),
-    # include club urls
+    # club
     path('', include('club.urls')),
-    # include training session urls
-    path('', include('trainingSession.urls'))
+    # training session
+    path('', include('trainingSession.urls')),
+    # post
+    path('', include('post.urls'))
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

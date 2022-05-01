@@ -10,6 +10,7 @@ from datetime import datetime as dt
 from django.views import View
 from django.db.models import Q
 from django.utils.decorators import method_decorator
+import uuid
 
 from .models import *
 from club.models import Club
@@ -120,13 +121,7 @@ class TrainingRegistrationApi(View):
             session = trs,
             user = request.user
         )
-        token = {
-            'session_id': trg.pk,
-            'user': request.user.username,
-            'date': str(trg.registered_at)
-        }.__str__()
-
-        token = "E-CLUB=" + sha256(token.encode()).hexdigest()[::2]
+        token = uuid.uuid5(uuid.NAMESPACE_URL, trs.created_at)
 
         trg.token = token
         trg.save()
@@ -160,4 +155,4 @@ def confirm(request: HttpRequest):
     trg.confirmed = True
     trg.save()
 
-    return HttpResponse("<h1> confirmed successfully </tr>")
+    return HttpResponse("<h1> confirmed successfully </h1>")

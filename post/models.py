@@ -41,6 +41,6 @@ class Post(models.Model):
 class Article(Post):
     approved = BooleanField(default=False)
     
-    def save(self):
+    def save(self, *args, **kwargs):
         self.category = Post.Categories.INF
-        super().save()
+        super().save(*args, **kwargs)
